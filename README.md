@@ -1,1 +1,4 @@
-# go-expire-passport-ids
+# Expired password checker
+# Сервис проверки недействительных паспортов РФ
+
+
