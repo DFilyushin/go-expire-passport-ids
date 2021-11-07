@@ -15,7 +15,7 @@ type FintechLogger struct {
 	logger *logrus.Logger
 }
 
-func NewFintechLogger (logType LoggerType) *FintechLogger {
+func NewFintechLogger(logType LoggerType) *FintechLogger {
 	l := new(FintechLogger)
 	l.logger = logrus.New()
 	switch logType {

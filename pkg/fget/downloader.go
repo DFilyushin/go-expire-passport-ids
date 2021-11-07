@@ -10,9 +10,12 @@ import (
 
 type FGet struct{}
 
-func (fg *FGet) DownloadFile(URL string) (fileName string, err error) {
-	/*Скачать файл по адресу URL во временную папку и вернуть имя файла */
+const (
+	TemporaryFilePrefix = "tmp-"
+)
 
+//DownloadFile скачивает файл по адресу
+func (fg *FGet) DownloadFile(URL string) (fileName string, err error) {
 	data, err := http.Get(URL)
 
 	if err != nil {
@@ -20,7 +23,7 @@ func (fg *FGet) DownloadFile(URL string) (fileName string, err error) {
 		return
 	}
 
-	f, err := ioutil.TempFile(os.TempDir(), "tmp-")
+	f, err := ioutil.TempFile(os.TempDir(), TemporaryFilePrefix)
 	if err != nil {
 		return
 	}

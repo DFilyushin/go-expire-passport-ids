@@ -17,10 +17,10 @@ func (pt *ProgressReader) Read(p []byte) (int, error) {
 
 	if err == nil {
 		if pt.processed == pt.total {
-			fmt.Printf("\rOn 100/100")
+			fmt.Printf("\rDownload complete")
 		} else {
 			v := pt.processed * 100 / pt.total
-			fmt.Printf("\rOn %d/100", v)
+			fmt.Printf("\rDownload %d from 100%", v)
 		}
 	}
 	return n, err

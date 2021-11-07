@@ -12,7 +12,7 @@ import (
 
 const (
 	MaxPassportIdLen = 10
-	BytesArrayLen = 125
+	BytesArrayLen    = 125
 )
 
 type Matrix struct {
@@ -20,8 +20,8 @@ type Matrix struct {
 	stringItems map[string]bool
 }
 
+// getStringItems Получить список строк
 func (m *Matrix) getStringItems() []string {
-	/*Получить список строк*/
 	var result []string
 	for k, _ := range m.stringItems {
 		result = append(result, k)
@@ -29,16 +29,16 @@ func (m *Matrix) getStringItems() []string {
 	return result
 }
 
+// NewMatrix Конструктор
 func NewMatrix() *Matrix {
-	/*Конструктор*/
 	m := new(Matrix)
 	m.items = make(map[int32][]byte)
 	m.stringItems = make(map[string]bool, 0)
 	return m
 }
 
+// isNumeric Проверка числа
 func (m *Matrix) isNumeric(item string) bool {
-	/*Проверка числа*/
 	for _, char := range item {
 		if char < 48 || char > 57 {
 			return false
@@ -47,27 +47,27 @@ func (m *Matrix) isNumeric(item string) bool {
 	return true
 }
 
+//addStringItem Добавление строки
 func (m *Matrix) addStringItem(item string) {
-	/*Добавить строку*/
 	m.stringItems[item] = true
 }
 
+//clearStringItems Очистка списка элементов
 func (m *Matrix) clearStringItems() {
-	/*Очистка списка элементов*/
 	for k := range m.stringItems {
 		delete(m.stringItems, k)
 	}
 }
 
+//clearByteMatrix Очистка матрицы
 func (m *Matrix) clearByteMatrix() {
-	/*Очистка матрицы*/
 	for k := range m.items {
 		delete(m.items, k)
 	}
 }
 
+//splitItemByTwoInt Разделение строки на два числа
 func (m *Matrix) splitItemByTwoInt(item string) (int32, int16) {
-	/*Разделение строки на два числа*/
 	value, _ := strconv.Atoi(item[:7])
 	firstItem := int32(value)
 
@@ -76,28 +76,29 @@ func (m *Matrix) splitItemByTwoInt(item string) (int32, int16) {
 	return firstItem, secondItem
 }
 
+//isCorrectPassportId Проверка корректности пасппорта
 func (m *Matrix) isCorrectPassportId(item string) bool {
 	return m.isNumeric(item) && len(item) == MaxPassportIdLen
 }
 
+//setArrayBit Установить бит в массиве байтов
 func (m *Matrix) setArrayBit(array []byte, value int16) []byte {
-	/*Установить бит в массиве байтов*/
 	numByte := value / 8
 	numBite := value % 8
 	array[numByte] = array[numByte] + byte(1<<numBite)
 	return array
 }
 
+//checkArrayBit Проверить наличие бита в массиве
 func (m *Matrix) checkArrayBit(array []byte, value int16) bool {
-	/*Проверить наличие бита в массиве*/
 	numByte := value / 8
 	numBite := value % 8
 	currentByte := byte(1 << numBite)
 	return currentByte == currentByte&array[numByte]
 }
 
+// AddItemToMatrix Добавление элемента в матрицу
 func (m *Matrix) AddItemToMatrix(item string) {
-	/*Добавление элемента в матрицу*/
 	if !m.isCorrectPassportId(item) {
 		m.addStringItem(item)
 		return
@@ -112,8 +113,8 @@ func (m *Matrix) AddItemToMatrix(item string) {
 	m.items[firstItem] = m.setArrayBit(bitArray, secondItem)
 }
 
+//FindItemInMatrix Поиск элемента в матрице
 func (m *Matrix) FindItemInMatrix(item string) bool {
-	/*Поиск элемента в матрице*/
 	if !m.isCorrectPassportId(item) {
 		_, isOk := m.stringItems[item]
 		return isOk
@@ -128,9 +129,9 @@ func (m *Matrix) FindItemInMatrix(item string) bool {
 	return m.checkArrayBit(bitArray, secondItem)
 }
 
+//LoadFromCsvFile Чтение из csv файла данных
 func (m *Matrix) LoadFromCsvFile(f *csv.Reader, skipHeader bool) (int, error) {
-	/*Чтение из csv файла данных*/
-	var processedLines int = 0
+	var processedLines = 0
 
 	for {
 		line, err := f.Read()
@@ -154,9 +155,8 @@ func (m *Matrix) LoadFromCsvFile(f *csv.Reader, skipHeader bool) (int, error) {
 	return processedLines, nil
 }
 
+//SaveMatrixToDisk Сохранить матрицу в файл
 func (m *Matrix) SaveMatrixToDisk(fileName string) error {
-	/*Сохранить матрицу в файл*/
-
 	numbersMap := make([]*protoMessage.NumbersMap, 0)
 
 	for k, v := range m.items {
@@ -166,13 +166,13 @@ func (m *Matrix) SaveMatrixToDisk(fileName string) error {
 		numbersMap = append(numbersMap, &numberMapItem)
 	}
 
-	var pdm = protoMessage.PassportDataMessage{
+	var message = protoMessage.PassportDataMessage{
 		CsvHeader:      "Matrix",
 		OtherLines:     m.getStringItems(),
 		NumbersOnlyMap: numbersMap,
 	}
 
-	out, err := proto.Marshal(&pdm)
+	out, err := proto.Marshal(&message)
 	if err != nil {
 		return err
 	}
@@ -183,9 +183,8 @@ func (m *Matrix) SaveMatrixToDisk(fileName string) error {
 	return nil
 }
 
+//LoadMatrixFromDisk  Загрузить матрицу из файла
 func (m *Matrix) LoadMatrixFromDisk(fileName string) error {
-	/*Загрузить матрицу из файла*/
-
 	in, err := ioutil.ReadFile(fileName)
 	if err != nil {
 		log.Fatalln("Error reading file:", err)

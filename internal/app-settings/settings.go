@@ -22,13 +22,13 @@ const (
 	DefaultFilePermission = 0644
 )
 
+//loadFromDotEnv Загрузить переменные окружения из файла .env
 func (s *Settings) loadFromDotEnv() error {
-	/*Загрузить переменные окружения из файла .env*/
 	return godotenv.Load(DefaultDotEnvFile)
 }
 
+// LoadSettings Чтение настроек из переменных окружения*/
 func (s *Settings) LoadSettings() {
-	/*Прочитать настройки из переменных окружения*/
 	file, err := os.OpenFile(DefaultDotEnvFile, os.O_RDONLY, DefaultFilePermission)
 	defer file.Close()
 	if !os.IsNotExist(err) {
@@ -43,12 +43,15 @@ func (s *Settings) LoadSettings() {
 		envName := tagName.Get(ApplicationTag)
 
 		switch vPtr.Field(i).Kind() {
+
 		case reflect.Int:
 			intValue, _ := strconv.Atoi(os.Getenv(envName))
 			vPtr.Field(i).SetInt(int64(intValue))
+
 		case reflect.String:
 			value := os.Getenv(envName)
 			vPtr.Field(i).SetString(value)
+
 		case reflect.Bool:
 			value := os.Getenv(envName)
 			boolValue, _ := strconv.ParseBool(value)

@@ -18,7 +18,6 @@ type InfrastructureController struct{}
 // @Router /health [get]
 func (ic InfrastructureController) GetHealthCheck() http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		/*Состояние сервиса*/
 		json.NewEncoder(writer).Encode(responses.HealthCheckResponse{Success: true})
 	}
 }
@@ -33,13 +32,6 @@ func (ic InfrastructureController) GetHealthCheck() http.HandlerFunc {
 // @Router /metrics [get]
 func (ic InfrastructureController) GetMetrics() http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		/*Метрики сервиса*/
 		json.NewEncoder(writer).Encode(responses.MetricsResponse{Value: 1})
 	}
 }
-
-//func (ic InfrastructureController) GetSwagger() http.HandlerFunc {
-//	return func(writer http.ResponseWriter, request *http.Request) {
-//		httpSwagger.Handler()
-//	}
-//}

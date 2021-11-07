@@ -9,6 +9,11 @@ import (
 
 type ApiController struct{}
 
+const (
+	queryParamSeries = "series"
+	queryParamNumber = "number"
+)
+
 // CheckPassport godoc
 // @Summary Check passport
 // @Description Check passport by series and number
@@ -20,12 +25,11 @@ type ApiController struct{}
 // @Success 200 {object} PassportCheckerResponse
 // @Router /checkPassport [get]
 func (c ApiController) CheckPassport(service *service.PassportIdService) http.HandlerFunc {
-	/*Проверка паспорта*/
 	return func(writer http.ResponseWriter, request *http.Request) {
 		params := request.URL.Query()
-		var series = params.Get("series")
-		var number = params.Get("number")
-		if (series == "") || (number == "") {
+		var series = params.Get(queryParamSeries)
+		var number = params.Get(queryParamNumber)
+		if series == "" || number == "" {
 			http.Error(writer, "Number and series important parameters!", http.StatusBadRequest)
 			return
 		}

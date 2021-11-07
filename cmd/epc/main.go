@@ -36,7 +36,7 @@ func main() {
 	server.Initialize(settings.ServerHost, settings.ServerPort, passportService)
 
 	go func() {
-		if err := server.RunService(); err != nil {
+		if err := server.RunServer(); err != nil {
 			logger.Fatalf("Error occured while running http server: %s", err.Error())
 		}
 	}()
