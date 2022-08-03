@@ -1,0 +1,80 @@
+definitions:
+  controllers.HealthCheckResponse:
+    properties:
+      success:
+        type: boolean
+    type: object
+  controllers.Metrics:
+    properties:
+      value:
+        type: integer
+    type: object
+  controllers.PassportCheckerResponse:
+    properties:
+      PassportNumber:
+        type: string
+      PassportSeries:
+        type: string
+      Result:
+        type: boolean
+    type: object
+info:
+  contact: {}
+paths:
+  /checkPassport:
+    get:
+      consumes:
+      - application/json
+      description: Check passport by series and number
+      parameters:
+      - description: "0415"
+        in: query
+        name: series
+        required: true
+        type: string
+      - description: "456001"
+        in: query
+        name: number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.PassportCheckerResponse'
+      summary: Check passport
+      tags:
+      - api
+  /health:
+    get:
+      consumes:
+      - application/json
+      description: Health check for service
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.HealthCheckResponse'
+      summary: Get service state
+      tags:
+      - infrastructure
+  /metrics:
+    get:
+      consumes:
+      - application/json
+      description: Return service metrics
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.Metrics'
+      summary: Get service metrics
+      tags:
+      - infrastructure
+swagger: "2.0"
